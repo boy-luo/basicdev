@@ -43,6 +43,18 @@ $config = [
             ],
         ],
         'db' => $db,
+//        'urlManager' => [
+////            'enablePrettyUrl' => true,
+////            'showScriptName' => false,
+////            'enableStrictParsing' => true,
+//            'suffix' => '.html',
+//            // 上面的配置允许URL管理器识别或生成带 .html 后缀的 URL
+        // Note：当你配置 URL 后缀时，如果请求的 URL 没有此后缀，系统将认为此 URL 无法识别。 这是 SEO（搜索引擎优化）的最佳实践。
+        // Tip：你可以设置URL后缀为 / 让所有的 URL 以斜线结束。
+////            'rules' => [
+////                // ...
+////            ],
+//        ],
         /*
         'urlManager' => [
             'enablePrettyUrl' => true,
@@ -51,8 +63,14 @@ $config = [
             ],
         ],
         */
+
+        // 使用函数注册"search" 组件
+//        'search' => function () {
+//            return new app\components\SolrService;
+//        },
     ],
     'params' => $params,
+//    'catchAll' => ['site/offline'],
 ];
 
 if (YII_ENV_DEV) {
