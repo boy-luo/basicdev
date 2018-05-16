@@ -23,6 +23,12 @@ $config = [
             'identityClass' => 'app\models\User',
             'enableAutoLogin' => true,
         ],
+
+        // todo: Yii 提供了两套授权管理器： yii\rbac\PhpManager 和 yii\rbac\DbManager。前者使用 PHP 脚本存放授权数据， 而后者使用数据库存放授权数据。
+        'authManager' => [
+            'class' => 'yii\rbac\PhpManager',
+        ],
+
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
