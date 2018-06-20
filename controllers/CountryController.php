@@ -54,6 +54,8 @@ class CountryController extends Controller
 //                        ],
 
             // todo: HttpCache 利用 Last-Modified 和 Etag HTTP头实现客户端缓存。
+            // todo: 成功
+            // todo: 成功
             // 记录动作执行时间日志的过滤器。
             [
                 'class' => 'yii\filters\HttpCache',
@@ -67,10 +69,12 @@ class CountryController extends Controller
                     // todo: 成功   304 not modified   需要返回时间戳
                      return 1526458007;
                     // return time()-1000;
+                    // todo: 下面的函數就实现根据内容变动而动态缓存--实现高效
                     //                    $q = new \yii\db\Query();
                     //                    return $q->from('user')->max('updated_at');
                 },
             ],
+
             // todo: “Entity Tag”（实体标签，简称 ETag）使用一个哈希值表示页面内容。如果页面被修改过， 哈希值也会随之改变。通过对比客户端的哈希值和服务器端生成的哈希值， 浏览器就能判断页面是否被修改过，进而决定是否应该重新传输内容。 -----类似用内容生成随机值 --可能有存储匹配
             // todo: 复杂的 Etag 生成种子可能会违背使用 HttpCache 的初衷而引起不必要的性能开销， 因为响应每一次请求都需要重新计算 Etag。 请试着找出一个最简单的表达式去触发 Etag 失效。
             [
@@ -95,18 +99,25 @@ Cache-Control: public, max-age=3600
 当页面使 session 时，PHP 将会按照 PHP.INI 中所设置的 session.cache_limiter 值自动发送一些缓存相关的 HTTP 头。 这些 HTTP 头有可能会干扰你原本设置的 HttpCache 或让其失效。 为了避免此问题，默认情况下 HttpCache 禁止自动发送这些头。 想改变这一行为，可以配置 yii\filters\HttpCache::$sessionCacheLimiter 属性。 该属性接受一个字符串值，包括 public，private，private_no_expire，和 nocache。 请参考 PHP 手册中的缓存限制器
     */
 
-            'pageCache' => [
-                'class' => PageCache::className(),
-                'only' => ['index'],
-                'duration' => 60,
-                'dependency' => [
-                    'class' => DbDependency::className(),
-                    'sql' => 'SELECT COUNT(*) FROM post',
-                ],
-                'variations' => [
-                    \Yii::$app->language,
-                ]
-            ],
+            // todo: PageCache 实现服务器端整个页面的缓存。如下示例所示，PageCache应用在 index 动作， 缓存整个页面 60 秒或 post 表的记录数发生变化
+            // todo: PageCache 实现服务器端整个页面的缓存。如下示例所示，PageCache应用在 index 动作， 缓存整个页面 60 秒或 post 表的记录数发生变化
+            // todo:  注意 页面缓存指的是在服务器端缓存整个页面的内容。
+            //// todo: 页面缓存指的是在服务器端缓存整个页面的内容。
+            /// // todo: 位置成功与否 ---缓存在服务器端
+            /// // todo: 位置成功与否 ---缓存在服务器端
+//            'pageCache' => [
+//                'class' => PageCache::className(),
+//                'only' => ['index'],
+//                'duration' => 60,
+//                'dependency' => [
+//                    'class' => DbDependency::className(),
+//                    'sql' => 'SELECT COUNT(*) FROM country',
+//                    // 'sql' => 'SELECT COUNT(*) FROM post',
+//                ],
+//                'variations' => [
+//                    \Yii::$app->language,
+//                ]
+//            ],
 
             // todo: AccessControl 提供基于 rules 规则的访问控制。 特别是在动作执行之前，访问控制会检测所有规则 并找到第一个符合上下文的变量（比如用户IP地址、登录状态等等）的规则， 来决定允许还是拒绝请求动作的执行
             //            'access' => [
@@ -122,9 +133,32 @@ Cache-Control: public, max-age=3600
             //                ],
             //            ],
             // todo: AccessControl 提供基于 rules 规则的访问控制。 特别是在动作执行之前，访问控制会检测所有规则 并找到第一个符合上下文的变量（比如用户IP地址、登录状态等等）的规则， 来决定允许还是拒绝请求动作的执行
+            /**
+            Access rules 支持很多的选项。下列是所支持选项的总览。 你可以派生 yii\filters\AccessRule 来创建自定义的存取规则类。
+                allow： 指定该规则是 "允许" 还是 "拒绝" 。（译者注：true是允许，false是拒绝）
+
+                actions：指定该规则用于匹配哪些动作。 它的值应该是动作方法的ID数组。匹配比较是大小写敏感的。如果该选项为空，或者不使用该选项， 意味着当前规则适用于所有的动作。
+
+                controllers：指定该规则用于匹配哪些控制器。 它的值应为控制器ID数组。匹配比较是大小写敏感的。如果该选项为空，或者不使用该选项， 则意味着当前规则适用于所有的动作。（译者注：这个选项一般是在控制器的自定义父类中使用才有意义）
+
+                roles：指定该规则用于匹配哪些用户角色。 系统自带两个特殊的角色，通过 yii\web\User::isGuest 来判断：
+
+                ?： 用于匹配访客用户 （未经认证）
+                @： 用于匹配已认证用户
+                使用其他角色名时，将触发调用 yii\web\User::can()，这时要求 RBAC 的支持 （在下一节中阐述）。 如果该选项为空或者不使用该选项，意味着该规则适用于所有角色。
+
+                yii\filters\AccessRule::roleParams：指定将传递给 yii\web\User::can() 的参数。 请参阅下面描述RBAC规则的部分，了解如何使用它。 如果此选项为空或未设置，则不传递任何参数。
+
+                ips：指定该规则用于匹配哪些 yii\web\Request::userIP 。 IP 地址可在其末尾包含通配符 * 以匹配一批前缀相同的IP地址。 例如，192.168.* 匹配所有 192.168. 段的IP地址。 如果该选项为空或者不使用该选项，意味着该规则适用于所有角色。
+
+                verbs：指定该规则用于匹配哪种请求方法（例如GET，POST）。 这里的匹配大小写不敏感。
+
+                matchCallback：指定一个PHP回调函数用于 判定该规则是否满足条件。（译者注：此处的回调函数是匿名函数）
+             */
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['login', 'logout', 'signup', 'about'],
+                // 'only' => ['login', 'logout', 'signup', 'about'],
+                'only' => ['login', 'logout', 'signup', 'about', 'special-callback'],
                 'rules' => [
                     [
                         'allow' => true,
@@ -135,6 +169,22 @@ Cache-Control: public, max-age=3600
                         'allow' => true,
                         'actions' => ['logout'],
                         'roles' => ['@'],
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['special-callback'],
+                        // ???????
+                        // 'verbs' => ['post'],
+                        // todo:  放到这里的
+                        // todo: 成功之后调用下面的 actionSpecialCallback ????
+                        // todo: 成功
+                        // todo: 成功
+                        // todo: 成功
+                        'matchCallback' => function ($rule, $action) {
+                            return date('d-m') === '16-05';
+                            return false;
+                            return date('d-m') === '31-10';
+                        }
                     ],
                 ],
             ],
@@ -170,6 +220,12 @@ Cache-Control: public, max-age=3600
                 ]
             ],
 
+//            // 认证失败调用方法
+//            'denyCallback' => function ($rule, $action) {
+//                return ' no  ok';
+//                throw new \Exception('You are not allowed to access this page 我的');
+//            }
+
             // todo: ContentNegotiator ContentNegotiator支持响应内容格式处理和语言处理。 通过检查 GET 参数和 Accept HTTP头部来决定响应内容格式和语言。
 //            [
 //                'class' => ContentNegotiator::className(),
@@ -182,6 +238,14 @@ Cache-Control: public, max-age=3600
 //                    'de',
 //                ],
 //            ],
+
+            // todo: 当速率限制被激活，默认情况下每个响应将包含以下 HTTP 头发送目前的速率限制信息：
+            // todo: 当速率限制被激活，默认情况下每个响应将包含以下 HTTP 头发送目前的速率限制信息：
+            // todo: 当速率限制被激活，默认情况下每个响应将包含以下 HTTP 头发送目前的速率限制信息：
+            // todo: 失败
+            // todo: 失败 限流 (Rate Limiting) ¶  http://www.yiichina.com/doc/guide/2.0/rest-rate-limiting
+            // todo: 失败 限流 (Rate Limiting) ¶  http://www.yiichina.com/doc/guide/2.0/rest-rate-limiting
+            // 'rateLimiter' => ['enableRateLimitHeaders' => false],
 
         ];
 
@@ -204,7 +268,22 @@ Cache-Control: public, max-age=3600
         //                                          ]
         //                                      ],
         //                                  ], parent::behaviors());
+
+
     }
+
+    // todo: 匹配的回调函数被调用了！这个页面只有每年的10月31号能访问（译者注：原文在这里说该方法是回调函数不确切，读者不要和 `matchCallback` 的值即匿名的回调函数混淆理解）。
+    // todo: 匹配的回调函数被调用了！这个页面只有每年的10月31号能访问（译者注：原文在这里说该方法是回调函数不确切，读者不要和 `matchCallback` 的值即匿名的回调函数混淆理解）。
+    // todo: 匹配的回调函数被调用了！这个页面只有每年的10月31号能访问（译者注：原文在这里说该方法是回调函数不确切，读者不要和 `matchCallback` 的值即匿名的回调函数混淆理解）。
+    public function actionSpecialCallback()
+    {
+        // todo: 成功
+        // todo: 成功
+        var_dump('是访问这个方法,, 上面匹配成功才能正常访问。');
+        exit();
+        return $this->render('happy-halloween');
+    }
+
 
     /**
      * Lists all Country models.

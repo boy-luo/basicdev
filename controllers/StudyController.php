@@ -13,17 +13,13 @@ use app\models\ContactForm;
 use app\models\EntryForm;
 use yii\helpers\Url;
 
-class SiteController extends Controller
+class StudyController extends Controller
 {
     /**
      * {@inheritdoc}
      */
     public function behaviors()
     {
-        // todo:  Yii 提供了两套授权管理器： yii\rbac\PhpManager 和 yii\rbac\DbManager。前者使用 PHP 脚本存放授权数据， 而后者使用数据库存放授权数据。
-        // todo:  Yii 提供了两套授权管理器： yii\rbac\PhpManager 和 yii\rbac\DbManager。前者使用 PHP 脚本存放授权数据， 而后者使用数据库存放授权数据。
-        // todo: 使用 PhpManager  配置 RBAC  Yii 提供了两套授权管理器： yii\rbac\PhpManager 和 yii\rbac\DbManager。前者使用 PHP 脚本存放授权数据， 而后者使用数据库存放授权数据。
-        // todo: 使用 PhpManager  配置 RBAC  Yii 提供了两套授权管理器： yii\rbac\PhpManager 和 yii\rbac\DbManager。前者使用 PHP 脚本存放授权数据， 而后者使用数据库存放授权数据。
         return [
             'access' => [
                 'class' => AccessControl::className(),
@@ -31,24 +27,12 @@ class SiteController extends Controller
 //                'only' => ['logout', 'entry'],
                 'only' => ['logout', 'entry', 'special-callback'],
                 'rules' => [
-                    // todo: 授权 http://www.yiichina.com/doc/guide/2.0/security-authorization
-                    // todo: 注意i只要一个满足就可以----- ACF 自顶向下逐一检查存取规则，直到找到一个与当前 欲执行的动作相符的规则。 然后该匹配规则中的 allow 选项的值用于判定该用户是否获得授权。
-                    // todo: 注意i只要一个满足就可以----- ACF 自顶向下逐一检查存取规则，直到找到一个与当前 欲执行的动作相符的规则。 然后该匹配规则中的 allow 选项的值用于判定该用户是否获得授权。
-                    // todo: 注意i只要一个满足就可以----- ACF 自顶向下逐一检查存取规则，直到找到一个与当前 欲执行的动作相符的规则。 然后该匹配规则中的 allow 选项的值用于判定该用户是否获得授权。
-                    // todo: 以下一个数组为一条验证规则
-                    // todo: 以下一个数组为一条验证规则
-                    [
-                        'allow' => true,
-                        'actions' => ['login', 'signup'],
-                        'roles' => ['?'],
-                    ],
                     [
                         // todo: 这里面修改 各个方法分别的规则
                         'actions' => ['logout', 'entry'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
-
                     [
                         'actions' => ['special-callback'],
                         'allow' => true,
@@ -66,31 +50,6 @@ class SiteController extends Controller
                             exit();
                             return date('d-m') === '19-04';
                         }
-                        /**
-
-                            allow： 指定该规则是 "允许" 还是 "拒绝" 。（译者注：true是允许，false是拒绝）
-
-                            actions：指定该规则用于匹配哪些动作。 它的值应该是动作方法的ID数组。匹配比较是大小写敏感的。如果该选项为空，或者不使用该选项， 意味着当前规则适用于所有的动作。
-
-                            controllers：指定该规则用于匹配哪些控制器。 它的值应为控制器ID数组。匹配比较是大小写敏感的。如果该选项为空，或者不使用该选项， 则意味着当前规则适用于所有的动作。（译者注：这个选项一般是在控制器的自定义父类中使用才有意义）
-
-                            roles：指定该规则用于匹配哪些用户角色。 系统自带两个特殊的角色，通过 yii\web\User::isGuest 来判断：
-
-                            ?： 用于匹配访客用户 （未经认证）
-                            @： 用于匹配已认证用户
-                            使用其他角色名时，将触发调用 yii\web\User::can()，这时要求 RBAC 的支持 （在下一节中阐述）。 如果该选项为空或者不使用该选项，意味着该规则适用于所有角色。
-
-                            yii\filters\AccessRule::roleParams：指定将传递给 yii\web\User::can() 的参数。 请参阅下面描述RBAC规则的部分，了解如何使用它。 如果此选项为空或未设置，则不传递任何参数。
-
-                            ips：指定该规则用于匹配哪些 yii\web\Request::userIP 。 IP 地址可在其末尾包含通配符 * 以匹配一批前缀相同的IP地址。 例如，192.168.* 匹配所有 192.168. 段的IP地址。 如果该选项为空或者不使用该选项，意味着该规则适用于所有角色。
-
-                            verbs：指定该规则用于匹配哪种请求方法（例如GET，POST）。 这里的匹配大小写不敏感。
-
-                            matchCallback：指定一个PHP回调函数用于 判定该规则是否满足条件。（译者注：此处的回调函数是匿名函数）
-
-                            当这个规则不满足条件时该函数会被调用。（译者注：此处的回调函数是匿名函数）
-
-                         * */
                     ],
 //                    [
 //                        'actions' => ['entry'],
@@ -132,6 +91,102 @@ class SiteController extends Controller
     public function actionIndex()
     {
         return $this->render('index');
+    }
+
+
+    /**
+     * 获取已经有的 属性
+     * @return string
+     */
+    public function actionProperty()
+    {
+
+        // yii\base\Application::id
+        // todo:
+         // var_dump(yii\base\Application::id);
+         $this->id;
+         var_dump($this->id);
+
+        // yii\base\Application::aliases
+
+        // var_dump($this->basePath);
+        // yii\base\Application::basePath
+        // todo:
+        // var_dump(yii\base\Application::basePath);
+
+        // Yii::$app->request->headers;
+        // var_dump(Yii::$app->request->headers);
+
+
+        // $headers 是一个 yii\web\HeaderCollection 对象
+        $headers = Yii::$app->request->headers;
+        // todo:
+        // var_dump($headers);
+
+        // 返回 Accept header 值
+        $accept = $headers->get('Accept');
+        var_dump($accept);
+
+        if ($headers->has('User-Agent')) {
+            /* 这是一个 User-Agent 头 */
+            echo ' 这是一个 User-Agent 头';
+            echo '<br>';
+        } else {
+            echo ' 这个沒有 User-Agent 头';
+            echo '<br>';
+
+        }
+
+        $userHost = Yii::$app->request->userHost;
+        var_dump($userHost);
+        $userIP = Yii::$app->request->userIP;
+        var_dump($userIP);
+
+        //yii\web\Request::url：返回 /admin/index.php/product?id=100, 此URL不包括host info部分。
+        //yii\web\Request::absoluteUrl：返回 http://example.com/admin/index.php/product?id=100, 包含host infode的整个URL。
+        //yii\web\Request::hostInfo：返回 http://example.com, 只有host info部分。
+        //yii\web\Request::pathInfo：返回 /product， 这个是入口脚本之后，问号之前（查询字符串）的部分。
+        //yii\web\Request::queryString：返回 id=100,问号之后的部分。
+        //yii\web\Request::baseUrl：返回 /admin, host info之后， 入口脚本之前的部分。
+        //yii\web\Request::scriptUrl：返回 /admin/index.php, 没有path info和查询字符串部分。
+        //yii\web\Request::serverName：返回 example.com, URL中的host name。
+        //yii\web\Request::serverPort：返回 80, 这是web服务中使用的端口。
+
+        $request = Yii::$app->request;
+        if ($request->isAjax) {
+            /* 该请求是一个 AJAX 请求 */
+            echo '该请求是一个 AJAX 请求';
+            echo '<br>';
+        } else {
+            echo '不是，该请求是一个 AJAX 请求';
+            echo '<br>';
+        }
+        if ($request->isGet)  {
+            /* 请求方法是 GET */
+            echo '请求方法是 GET';
+            echo '<br>';
+        } else {
+            echo '不是，请求方法是 GET';
+            echo '<br>';
+        }
+        if ($request->isPost) {
+            /* 请求方法是 POST */
+            echo '请求方法是 POST';
+            echo '<br>';
+        } else {
+            echo '不是，请求方法是 POST';
+            echo '<br>';
+        }
+        if ($request->isPut)  {
+            /* 请求方法是 PUT */
+            echo '请求方法是 PUT';
+            echo '<br>';
+        } else {
+            echo '不是，请求方法是 PUT';
+            echo '<br>';
+        }
+
+        // return $this->render('index');
     }
 
     /**

@@ -26,7 +26,17 @@ $config = [
 
         // todo: Yii 提供了两套授权管理器： yii\rbac\PhpManager 和 yii\rbac\DbManager。前者使用 PHP 脚本存放授权数据， 而后者使用数据库存放授权数据。
         'authManager' => [
+            // todo: 使用 PhpManager
             'class' => 'yii\rbac\PhpManager',
+
+            // todo: 使用 DbManager
+//            'class' => 'yii\rbac\DbManager',
+//            // uncomment if you want to cache RBAC items hierarchy
+//            // 'cache' => 'cache',
+//            'class' => 'yii\rbac\DbManager',
+//            'itemTable' => 'auth_item',
+//            'assignmentTable' => 'auth_assignment',
+//            'itemChildTable' => 'auth_item_child',
         ],
 
         'errorHandler' => [
